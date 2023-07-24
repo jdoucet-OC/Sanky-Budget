@@ -15,7 +15,7 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 #### Cloner le repository
 
 - `cd /path/to/put/project/in`
-- `git clone https://github.com/OpenClassrooms-Student-Center/Python-OC-Lettings-FR.git`
+- `git clone https://github.com/jdoucet-OC/Sanky-Budget.git`
 
 #### Créer l'environnement virtuel
 
