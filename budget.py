@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 import pandas as pd
+import random
 
 # import tableau excel vers pandas.DataFrame
 # sort pour format diagramme (pas de croisements)
@@ -63,6 +64,11 @@ for source, target in zip(source_columns, target_columns):
                                                revenue_data[revenue_data[[source, target]].isin([row[source], row[target]]).
                                                all(axis=1)][amount_column].sum())  # ***
                   for index, row in sub_df.iterrows()}
+    # *** : sub_df[pd.Series de boolean] va retourner sub_df pour les valeurs "True" de la boolean pd.Series.
+    #       Ici, la méthode "isin()" permet de retourner un boolean pd.Series si et seulement si les valeurs
+    #       se situe dans la liste en paramètre. on va donc avoir sub_df[sub_df[a,b].isin(liste).all(axis=1)]
+    #       pour a et b se situant de la liste "liste".
+
     for branch, amounts in graph_path.items():
         total_amount, local_amount = amounts
         source, target = branch
@@ -72,25 +78,27 @@ for source, target in zip(source_columns, target_columns):
         target_list.append(target_index)
         value_list.append(local_amount)
 label_list = [f"{key} : {item['weight']}€" for key, item in branch_map.items()]
-# *** : sub_df[pd.Series de boolean] va retourner sub_df pour les valeurs "True" de la boolean pd.Series.
-#       Ici, la méthode "isin()" permet de retourner un boolean pd.Series si et seulement si les valeurs
-#       se situe dans la liste en paramètre. on va donc avoir sub_df[sub_df[a,b].isin(liste).all(axis=1)]
-#       pour a et b se situant de la liste "liste".
+branch_colors = []
+for _ in range(len(target_list)):
+    color1, color2, color3 = random.sample(range(0, 255), 3)
+    branch_colors.append(f"rgba({color1},{color2},{color3},0.7)")
+node_colors = [elem.replace(",0.7", ",0.2") for elem in branch_colors]
 
-fig = go.Figure(data=[go.Sankey(
-    valueformat=".0f",
-    node=dict(
-      pad=15,
-      thickness=15,
-      line=dict(color="black", width = 1),
-      label=label_list,
-      color="blue"
-    ),
-    link=dict(
-      source=source_list,
-      target=target_list,
-      value=value_list,
-  ))])
+fig = go.Figure(data=[go.Sankey(valueformat=".0f",
+                                node=dict(
+                                    pad=15,
+                                    thickness=15,
+                                    line=dict(color="black", width=1),
+                                    label=label_list,
+                                    color=branch_colors),
+                                link=dict(
+                                    source=source_list,
+                                    target=target_list,
+                                    value=value_list,
+                                    color=node_colors)
+                                )
+                      ]
+                )
 
 fig.update_layout(title_text="Répartition Budget",
                   font_size=10)
