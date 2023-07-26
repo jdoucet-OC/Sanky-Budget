@@ -19,13 +19,12 @@ del target_columns[0]
 def add_in_map(new_values, weights, dictionnary):
     """
     :param new_values: values in tuple to add to dictionnary, if not exist
-    :param weights:
+    :param weights: weights for each nodes, to update or assign
     :param dictionnary: dictionnary to add values into
     return: updated dictionnary
     """
     source_value, target_value = new_values
     source_weight, target_weight = weights
-    print(new_values, weights)
     if not dictionnary:
         dictionnary = {source_value: {"weight": source_weight, "index": 0},
                        target_value: {"weight": target_weight, "index": 1}}
